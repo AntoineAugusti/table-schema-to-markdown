@@ -72,26 +72,24 @@ def format_type_specific_info(col_content):
     buff = io.StringIO()
     for prop in TYPE_SPECIFIC_MAP:
         if prop in col_content:
-            buff.write('- {} : {}\n'.format(TYPE_SPECIFIC_MAP[prop], col_content[prop]))
+            buff.write('{} : {}'.format(TYPE_SPECIFIC_MAP[prop], col_content[prop]))
 
     if 'bareNumber' in col_content and col_content['bareNumber'] == 'false':
-        buff.write('- Le nombre peut contenir des caractères supplémentaires (« € », « % » ...)\n')
+        buff.write('Le nombre peut contenir des caractères supplémentaires (« € », « % » ...)')
     ret = buff.getvalue()
     buff.close()
     return ret
 
 
-def format_constraints(col_content):
-    """ Converts type and constraints information into markdown """
+def format_type(col_content):
     buff = io.StringIO()
-
     # Type
     type_ = col_content.get('type')
     format_ = col_content.get('format')
 
     if type_:
         type_val = TYPE_MAP.get(type_, '??{}??'.format(type_))
-        buff.write('- Type : {}{}\n'.format(
+        buff.write('{}{}|'.format(
             type_val,
             "" if format_ in ["default", None] else " (format `{}`)".format(format_)
 
@@ -102,30 +100,42 @@ def format_constraints(col_content):
     # RDFType
     rdf_type = col_content.get('rdfType')
     if rdf_type:
-        buff.write('- Type RDF : {}\n'.format(rdf_type))
+        buff.write('{}|'.format(rdf_type))
 
+    ret = buff.getvalue()
+    buff.close()
+    return ret
+
+
+def format_example(col_content):
     example = col_content.get('example')
     if example:
-        buff.write('- Exemple : {}\n'.format(example))
+        return '{}|'.format(example)
+
+    return '|'
+
+
+def format_constraints(col_content):
+    """ Converts type and constraints information into Markdown """
+    buff = io.StringIO()
 
     constraints = col_content.get('constraints')
     if constraints:
         required = None
         if constraints.get('required'):
-            required = 'obligatoire'
+            required = 'Valeur obligatoire'
         elif not constraints.get('required', True):
-            required = 'optionnelle'
+            required = 'Valeur optionnelle'
         constraint_str_list = list(filter(None, [
             required,
-            'unique' if constraints.get('unique') else None,
+            'Valeur unique' if constraints.get('unique') else None,
         ]))
-        if constraint_str_list:
-            buff.write('- Valeur : {}\n'.format(",".join(constraint_str_list)))
 
         # minLength, maxLength, minimum, maximum, pattern, enum
-        for prop in CONSTRAINTS_MAP:
-            if prop in constraints:
-                buff.write('- {}\n'.format(CONSTRAINTS_MAP[prop](constraints[prop])))
+        for prop in [prop for prop in CONSTRAINTS_MAP if prop in constraints]:
+            constraint_str_list.append(CONSTRAINTS_MAP[prop](constraints[prop]))
+
+        buff.write(', '.join(constraint_str_list))
 
     ret = buff.getvalue()
     buff.close()
@@ -136,6 +146,25 @@ def format_property(name, value):
     if name == "created":
         return datetime.fromisoformat(value).strftime("%x")
     return value
+
+
+def format_name(field_json):
+    buff = io.StringIO()
+
+    field_name = field_json.get('name')
+    buff.write('|{}'.format(
+        "{}".format(field_name) if field_name else "Erreur : nom manquant"
+    ))
+
+    title = field_json.get('title')
+    if title:
+        buff.write(" ({})".format(title))
+
+    buff.write('|')
+
+    ret = buff.getvalue()
+    buff.close()
+    return ret
 
 
 def convert_source(source, out_fd, schemas_config=None):
@@ -185,28 +214,31 @@ def convert_json(schema_json, out_fd):
     fields = schema_json.get('fields')
     if fields:
         out_fd.write('### Modèle de données\n\n')
+        # GitHub Flavored Markdown table header
+        headers = ['Nom', 'Type', 'Description', 'Exemple', 'Propriétés']
+        out_fd.write('|' + '|'.join(headers) + '|\n')
+        out_fd.write('|' + '|'.join('-' * len(headers)) + '|\n')
         for field in fields:
             convert_field(field, out_fd)
+
+
+def format_description(field_json):
+    description = field_json.get('description')
+    if description:
+        return "{}|".format(description)
+    return ""
 
 
 def convert_field(field_json, out_fd):
     """ Convert json content describing a column to markdown """
 
-    field_name = field_json.get('name')
-    out_fd.write('#### {}\n\n'.format(
-        "`{}`".format(field_name) if field_name else "Erreur : nom manquant"
-    ))
-
-    title = field_json.get('title')
-    if title:
-        out_fd.write("- Titre : {}\n".format(title))
-
-    description = field_json.get('description')
-    if description:
-        out_fd.write("- Description : {}\n".format(description))
-
+    out_fd.write(format_name(field_json))
+    out_fd.write(format_type(field_json))
+    out_fd.write(format_description(field_json))
+    out_fd.write(format_example(field_json))
     out_fd.write(format_constraints(field_json))
-    out_fd.write('\n')
+
+    out_fd.write('|\n')
 
 
 def main():
@@ -224,7 +256,7 @@ def main():
     logging.basicConfig(
         format="%(levelname)s:%(name)s:%(asctime)s:%(message)s",
         level=numeric_level,
-        stream=sys.stdout, # Use stderr if script outputs data to stdout.
+        stream=sys.stdout,  # Use stderr if script outputs data to stdout.
     )
 
     out_fd = sys.stdout if args.output == 'stdout' else open(args.output, mode='wt', encoding='UTF-8')
