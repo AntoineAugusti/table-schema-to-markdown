@@ -1,9 +1,6 @@
-#!/usr/bin/env python3
-import argparse
 import io
 import json
 import logging
-import sys
 
 from collections import OrderedDict
 from datetime import datetime
@@ -260,36 +257,3 @@ def convert_field(field_json, out_fd):
     out_fd.write(format_constraints(field_json))
 
     out_fd.write("|\n")
-
-
-def main():
-    """Converts a table schema file into Markdown."""
-
-    parser = argparse.ArgumentParser(
-        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
-    )
-    parser.add_argument("table_schema", help="path or URL of table schema file")
-    parser.add_argument("-o", "--output", help="Output file name", default="stdout")
-    parser.add_argument("--log", default="WARNING", help="level of logging messages")
-    args = parser.parse_args()
-
-    numeric_level = getattr(logging, args.log.upper(), None)
-    if not isinstance(numeric_level, int):
-        raise ValueError("Invalid log level: {}".format(args.log))
-    logging.basicConfig(
-        format="%(levelname)s:%(name)s:%(asctime)s:%(message)s",
-        level=numeric_level,
-        stream=sys.stdout,  # Use stderr if script outputs data to stdout.
-    )
-
-    out_fd = (
-        sys.stdout
-        if args.output == "stdout"
-        else open(args.output, mode="wt", encoding="UTF-8")
-    )
-
-    convert_source(args.table_schema, out_fd)
-
-
-if __name__ == "__main__":
-    main()

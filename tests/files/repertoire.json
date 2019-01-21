@@ -1,0 +1,152 @@
+{
+   "title":"Métadonnées d'un répertoire Git",
+   "author":"Antoine Augusti <antoine.augusti@example.com>",
+   "created":"2018-12-31",
+   "updated":"2018-12-31",
+   "homepage":"https://github.com/AntoineAugusti/data-codes-sources-fr",
+   "fields":[
+      {
+         "name":"nom",
+         "description":"Le nom du répertoire",
+         "example": "nom-repertoire",
+         "type":"string",
+         "constraints": {
+            "required": true
+         }
+      },
+      {
+         "name":"organisation_nom",
+         "description":"Le nom de l'organisation",
+         "example": "etalab",
+         "type":"string",
+         "constraints": {
+            "required": true
+         }
+      },
+      {
+         "name":"plateforme",
+         "description":"La plateforme de dépôt de code",
+         "example": "GitHub",
+         "type":"string",
+         "constraints": {
+            "required": true,
+            "enum":[
+               "GitHub"
+            ]
+         }
+      },
+      {
+         "name":"repertoire_url",
+         "description":"L'URL vers le répertoire",
+         "example": "https://github.com/etalab/nom-repertoire",
+         "type":"string",
+         "format":"uri",
+         "constraints": {
+            "required": true
+         }
+      },
+      {
+         "name":"description",
+         "description":"La description du répertoire",
+         "example": "Ce répertoire est utile",
+         "type":"string",
+         "constraints": {
+            "required": false
+         }
+      },
+      {
+         "name":"est_fork",
+         "description":"Indique si le répertoire est un fork",
+         "example": "false",
+         "type":"boolean",
+         "constraints": {
+            "required": true
+         }
+      },
+      {
+         "name":"date_creation",
+         "description":"La date de création du répertoire",
+         "example": "2018-12-01T20:00:55Z",
+         "type":"datetime",
+         "constraints": {
+            "required": true
+         }
+      },
+      {
+         "name":"derniere_mise_a_jour",
+         "description":"La date de dernière mise à jour du répertoire",
+         "example": "2018-12-01T20:00:55Z",
+         "type":"datetime",
+         "constraints": {
+            "required": true
+         }
+      },
+      {
+         "name":"page_accueil",
+         "description":"URL vers la page d'accueil du projet",
+         "example": "https://etalab.gouv.fr",
+         "type":"string",
+         "constraints": {
+            "required": false
+         }
+      },
+      {
+         "name":"nombre_stars",
+         "description":"Le nombre de fois où le répertoire a été ajouté aux favoris",
+         "example": 42,
+         "type":"integer",
+         "constraints": {
+            "minimum": 0,
+            "required": true
+         }
+      },
+      {
+         "name":"nombre_forks",
+         "description":"Le nombre de fois où le répertoire a été forké",
+         "example": 13,
+         "type":"integer",
+         "constraints": {
+            "minimum": 0,
+            "required": true
+         }
+      },
+      {
+         "name":"licence",
+         "description":"La licence du répertoire, telle que détectée par la plateforme",
+         "example": "MIT",
+         "type":"string",
+         "constraints": {
+            "required": false
+         }
+      },
+      {
+         "name":"nombre_issues_ouvertes",
+         "description":"Le nombre d'issues actuellement ouvertes",
+         "example": "0",
+         "type":"integer",
+         "constraints": {
+            "required": true,
+            "minimum": 0
+         }
+      },
+      {
+         "name":"langage",
+         "description":"Le langage principal du répertoire, tel que détecté par la plateforme",
+         "example": "Python",
+         "type":"string",
+         "constraints": {
+            "required": false
+         }
+      },
+      {
+         "name":"topics",
+         "description":"Les tags du répertoire",
+         "example": "utile,france,opendata",
+         "type":"string",
+         "constraints": {
+            "required": false
+         }
+      }
+   ],
+   "primaryKey":"repertoire_url"
+}
