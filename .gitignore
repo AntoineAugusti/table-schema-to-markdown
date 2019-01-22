@@ -1,2 +1,5 @@
 venv
 *.pyc
+build/
+dist/
+table_schema_to_markdown.egg-info/
