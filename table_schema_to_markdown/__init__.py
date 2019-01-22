@@ -249,7 +249,7 @@ def format_description(field_json):
 
 
 def convert_field(field_json, out_fd):
-    """ Convert json content describing a column to markdown """
+    """ Convert JSON content describing a column to Markdown"""
 
     out_fd.write(format_name(field_json))
     out_fd.write(format_type(field_json))

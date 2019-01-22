@@ -11,9 +11,9 @@ from table_schema_to_markdown import convert_source
 parser = argparse.ArgumentParser(
     description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
 )
-parser.add_argument("table_schema", help="path or URL of table schema file")
+parser.add_argument("table_schema", help="Path or URL of table schema file")
 parser.add_argument("-o", "--output", help="Output file name", default="stdout")
-parser.add_argument("--log", default="WARNING", help="level of logging messages")
+parser.add_argument("--log", default="WARNING", help="Level of logging messages")
 args = parser.parse_args()
 
 numeric_level = getattr(logging, args.log.upper(), None)
