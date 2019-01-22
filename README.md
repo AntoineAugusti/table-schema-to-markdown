@@ -39,10 +39,17 @@ table-schema-to-md schema.json documentation.md
 ```python
 from table_schema_to_markdown import convert_source
 
+# Generate a Markdown documentation from a JSON file
 table_schema = '/tmp/schema.json'
-out_file = open('/tmp/doc.md', 'a')
+with open('/tmp/doc.md', 'a') as out:
+    convert_source(table_schema, out)
 
-convert_source(table_schema, out_file)
+# Generate Markdown documentation in a string
+import io
+
+with io.StringIO() as buff:
+    convert_source(table_schema, buff)
+    documentation = buff.getvalue()
 ```
 
 ## Generated documentation example
