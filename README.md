@@ -1,15 +1,23 @@
+[![Software License](https://img.shields.io/badge/License-MIT-orange.svg?style=flat-square)](https://github.com/AntoineAugusti/table-schema-to-markdown/blob/master/LICENSE.md)
+![CircleCI](https://img.shields.io/circleci/project/github/AntoineAugusti/table-schema-to-markdown.svg?style=flat-square)
+![PyPI](https://img.shields.io/pypi/table-schema-to-markdown.svg?style=flat-square)
+
 # Table Schema to Markdown
-Crée un fichier de documentation Markdown à partir d'un [fichier Table Schema](https://frictionlessdata.io/specs/table-schema/).
+Create a Markdown documentation file from a [Table Schema file](https://frictionlessdata.io/specs/table-schema/).
 
-Le code de base provient de [validata/validata-doc-generator](https://git.opendatafrance.net/validata/validata-doc-generator).
+The original code is coming from [validata/validata-doc-generator](https://git.opendatafrance.net/validata/validata-doc-generator).
 
-## Utilisation
-Requiert l'utilisation de Python 3.
+## Installation
+```
+pip install table-schema-to-markdown
+```
 
-```sh
-python main.py --help
-
-usage: main.py [-h] [-o OUTPUT] [--log LOG] table_schema
+## Usage
+### Command line tool
+The package provides a command line tool.
+```
+$ table-schema-to-md -h
+usage: table-schema-to-md [-h] [-o OUTPUT] [--log LOG] table_schema
 
 positional arguments:
   table_schema          path or URL of table schema file
@@ -21,12 +29,20 @@ optional arguments:
   --log LOG             level of logging messages
 ```
 
-Vers la sortie standard :
+Example:
 ```
-python main.py schema.json
+table-schema-to-md schema.json documentation.md
 ```
 
-Vers un fichier:
+### In Python
+```python
+from table_schema_to_markdown import convert_source
+
+table_schema = '/tmp/schema.json'
+out_file = open('/tmp/doc.md', 'a')
+
+convert_source(table_schema, out_file)
 ```
-python main.py schema.json -o doc.md
-```
+
+## Notice
+This software is available under the MIT license.
