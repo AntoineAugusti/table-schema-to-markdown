@@ -1,6 +1,6 @@
 [![Software License](https://img.shields.io/badge/License-MIT-orange.svg?style=flat-square)](https://github.com/AntoineAugusti/table-schema-to-markdown/blob/master/LICENSE.md)
 ![CircleCI](https://img.shields.io/circleci/project/github/AntoineAugusti/table-schema-to-markdown.svg?style=flat-square)
-![PyPI](https://img.shields.io/pypi/table-schema-to-markdown.svg?style=flat-square)
+![PyPI](https://img.shields.io/pypi/v/table-schema-to-markdown.svg?style=flat-square)
 
 # Table Schema to Markdown
 Create a Markdown documentation file from a [Table Schema file](https://frictionlessdata.io/specs/table-schema/).
