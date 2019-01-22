@@ -151,7 +151,7 @@ def format_constraints(col_content):
 
 def format_property(name, value):
     if name == "created":
-        return datetime.fromisoformat(value).strftime("%x")
+        return datetime.strptime(value, "%Y-%m-%d").strftime("%x")
     return value
 
 
