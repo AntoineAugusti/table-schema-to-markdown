@@ -53,6 +53,8 @@ with io.StringIO() as buff:
 ```
 
 ## Generated documentation example
+[This table schema file](tests/files/repertoire.json) is rendered in Markdown in [this file](tests/files/expected_repertoire.md).
+
 Find a generated documentation file below.
 
 ## Métadonnées d'un répertoire Git
