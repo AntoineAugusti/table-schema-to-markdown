@@ -194,9 +194,8 @@ def convert_json(schema_json, out_fd):
         out_fd.write(schema_json["description"])
         out_fd.write("\n\n")
 
-    version = schema_json.get("version")
-    if version:
-        out_fd.write("## Version {}".format(version))
+    if "version" in schema_json:
+        out_fd.write("## Version {}".format(schema_json.get("version")))
         out_fd.write("\n\n")
 
     for property_name in ("author", "contributor", "created", "homepage", "example"):
