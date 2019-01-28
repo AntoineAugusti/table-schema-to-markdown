@@ -186,8 +186,9 @@ def convert_json(schema_json, out_fd):
     """ Converts table schema data to markdown """
 
     # Header
-    out_fd.write("## {}".format(schema_json["title"]))
-    out_fd.write("\n\n")
+    if "title" in schema_json:
+        out_fd.write("## {}".format(schema_json["title"]))
+        out_fd.write("\n\n")
 
     if "description" in schema_json:
         out_fd.write(schema_json["description"])
