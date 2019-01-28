@@ -177,7 +177,7 @@ def format_name(field_json):
 
 def convert_source(source, out_fd):
     log.info("Loading schema from %r", source)
-    schema = json.load(open(source))
+    schema = json.load(open(source, encoding="utf-8"))
 
     convert_json(schema, out_fd)
 
