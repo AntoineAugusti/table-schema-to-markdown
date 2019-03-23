@@ -6,17 +6,31 @@ import logging
 from collections import OrderedDict
 from datetime import datetime
 
+NAME = "name"
+TITLE = "title"
+DESCRIPTION = "description"
+PRIMARY_KEY = "primaryKey"
+MISSING_VALUES = "missingValues"
+
+AUTHOR = "author"
+CONTRIBUTOR = "contributor"
+VERSION = "version"
+CREATED = "created"
+HOMEPAGE = "homepage"
+EXAMPLE = "example"
+
 log = logging.getLogger(__name__)
 
-SCHEMA_PROP_MAP = {
-    "author": "Auteur",
-    "contributor": "Contributeurs",
-    "version": "Version",
-    "created": "Schéma créé le",
-    "homepage": "Site web",
-    "example": "Données d'exemple",
-}
-
+SCHEMA_PROP_MAP = OrderedDict(
+    [
+        (AUTHOR, "Auteur"),
+        (CONTRIBUTOR, "Contributeurs"),
+        (CREATED, "Schéma créé le"),
+        (HOMEPAGE, "Site web"),
+        (EXAMPLE, "Données d'exemple"),
+        (VERSION, "Version"),
+    ]
+)
 
 TYPE_MAP = {
     "array": "liste",
@@ -115,7 +129,7 @@ def format_type(col_content):
 
 
 def format_example(col_content):
-    example = col_content.get("example")
+    example = col_content.get(EXAMPLE)
     if example:
         return "{}|".format(example)
 
@@ -151,8 +165,14 @@ def format_constraints(col_content):
 
 
 def format_property(name, value):
-    if name == "created":
+    if name == CREATED:
         return datetime.strptime(value, "%Y-%m-%d").strftime("%x")
+    if name == MISSING_VALUES:
+        if value == [""]:
+            return ""
+        return ", ".join(map(lambda v: '`"{}"`'.format(v), value))
+    if name == PRIMARY_KEY:
+        return ", ".join(value) if isinstance(value, list) else value
     return value
 
 
@@ -177,56 +197,38 @@ def format_name(field_json):
 
 def convert_source(source, out_fd):
     log.info("Loading schema from %r", source)
-    schema = json.load(open(source, encoding="utf-8"))
+    with open(source, encoding="utf-8") as f:
+        schema = json.load(f)
 
     convert_json(schema, out_fd)
+
+
+def write_property(schema_json, property_name, out_fd, prefix="", suffix="\n\n"):
+    if property_name in schema_json:
+        propery_value = format_property(property_name, schema_json[property_name])
+        if propery_value != "":
+            out_fd.write(prefix + propery_value + suffix)
 
 
 def convert_json(schema_json, out_fd):
     """ Converts table schema data to markdown """
 
     # Header
-    if "title" in schema_json:
-        out_fd.write("## {}".format(schema_json["title"]))
-        out_fd.write("\n\n")
+    if NAME in schema_json:
+        write_property(schema_json, NAME, out_fd, "## ")
+        write_property(schema_json, TITLE, out_fd)
+    else:
+        write_property(schema_json, TITLE, out_fd, "## ")
+    write_property(schema_json, DESCRIPTION, out_fd)
 
-    if "description" in schema_json:
-        out_fd.write(schema_json["description"])
-        out_fd.write("\n\n")
+    for property_name in SCHEMA_PROP_MAP.keys():
+        prefix = "- {} : ".format(SCHEMA_PROP_MAP[property_name])
+        write_property(schema_json, property_name, out_fd, prefix, "\n")
 
-    if "version" in schema_json:
-        out_fd.write("## Version {}".format(schema_json.get("version")))
-        out_fd.write("\n\n")
+    write_property(schema_json, MISSING_VALUES, out_fd, "- Valeurs manquantes : ", "\n")
+    write_property(schema_json, PRIMARY_KEY, out_fd, "- Clé primaire : `", "`\n")
 
-    for property_name in ("author", "contributor", "created", "homepage", "example"):
-        property_value = schema_json.get(property_name)
-        if property_value:
-            out_fd.write(
-                "- {} : {}\n".format(
-                    SCHEMA_PROP_MAP[property_name],
-                    format_property(property_name, property_value),
-                )
-            )
-
-    # Missing values
-    missing_values = schema_json.get("missingValues")
-    if missing_values:
-        out_fd.write(
-            "- Valeurs manquantes : {}\n".format(
-                ", ".join(map(lambda v: '`"{}"`'.format(v), missing_values))
-            )
-        )
-
-    # Primary key
-    primary_key = schema_json.get("primaryKey")
-    if primary_key:
-        out_fd.write(
-            "- Clé primaire : `{}`\n".format(
-                ", ".join(primary_key) if isinstance(primary_key, list) else primary_key
-            )
-        )
-
-    # Foreign keys contraint is more complex than a list of strings, more work required.
+    # Foreign keys constraint is more complex than a list of strings, more work required.
 
     out_fd.write("\n")
 

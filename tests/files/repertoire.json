@@ -4,6 +4,7 @@
    "created":"2018-12-31",
    "updated":"2018-12-31",
    "homepage":"https://github.com/AntoineAugusti/data-codes-sources-fr",
+   "missingValues": ["Nan"],
    "fields":[
       {
          "name":"nom",

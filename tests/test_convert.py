@@ -26,7 +26,7 @@ class TestMain(unittest.TestCase):
             got = buff.getvalue().split("\n")
             buff.close()
 
-            with open(expected_filepath) as f:
+            with open(expected_filepath, encoding="utf-8") as f:
                 expected = f.read().split("\n")
 
-            self.assertEquals(expected, got)
+            self.assertEqual(expected, got)

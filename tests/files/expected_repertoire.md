@@ -3,6 +3,7 @@
 - Auteur : Antoine Augusti <antoine.augusti@example.com>
 - Schéma créé le : 12/31/18
 - Site web : https://github.com/AntoineAugusti/data-codes-sources-fr
+- Valeurs manquantes : `"Nan"`
 - Clé primaire : `repertoire_url`
 
 ### Modèle de données
