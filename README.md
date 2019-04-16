@@ -31,8 +31,11 @@ optional arguments:
 ```
 
 Example:
-```
-table-schema-to-md schema.json documentation.md
+```sh
+# Print generated Markdown
+table-schema-to-md schema.json
+# Save to Markdown file
+table-schema-to-md schema.json -o documentation.md
 ```
 
 ### In Python
