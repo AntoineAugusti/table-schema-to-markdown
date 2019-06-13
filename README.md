@@ -6,7 +6,7 @@
 # Table Schema to Markdown
 Create a Markdown documentation file from a [Table Schema file](https://frictionlessdata.io/specs/table-schema/).
 
-The original code is coming from [validata/validata-doc-generator](https://git.opendatafrance.net/validata/validata-doc-generator).
+The original scripts are coming from [doc-generator](https://git.opendatafrance.net/scdl/doc-generator) for the [Validata](https://validata.fr/) project, which are now available as [an npm package](https://www.npmjs.com/package/@opendataschema/table-schema-to-markdown).
 
 ## Installation
 ```
